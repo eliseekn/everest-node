@@ -6,12 +6,16 @@ const schema = new mongoose.Schema({
         required: true
     },
 
+    slug: {
+        type: String
+    },
+
     content: {
         type: String,
         required: true
     },
 
-    Image: {
+    image: {
         type: String
     },
 

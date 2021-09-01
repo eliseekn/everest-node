@@ -7,8 +7,10 @@ router.route('/')
     .post(post.create)
     .delete(post.deleteAll)
 
-router.route('/:id')
+router.route('/:slug')
     .get(post.read)
+    
+router.route('/:id')
     .put(post.update)
     .delete(post.delete)
 

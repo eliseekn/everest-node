@@ -1,9 +1,11 @@
+import styles from '../styles/Home.module.css'
+
 export default function Footer() {
     return (
-        <footer className="d-flex flex-column align-items-center text-white">
-            <h1 className="display-3 mb-4">Le blog de l&apos;Everest</h1>
+        <footer className={styles.footer}>
+            <h1 className="display-3 mb-4">Le Blog de l&apos;Everest</h1>
 
-            <ul className="social-icons">
+            <ul className={styles.social_icons}>
                 <a href="#" className="text-white mx-3">
                     <i className="bi bi-facebook"></i>
                 </a>
