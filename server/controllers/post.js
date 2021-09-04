@@ -5,10 +5,10 @@ const fileUpload = require('../service/file-upload')
 exports.index = (req, res) => {
     db.Post.find()
         .then(posts => {
-            const limit = parseInt(req.query.limit)
+            const limit = parseInt(req.query.limit ?? 5)
             const totalPages = Math.ceil(posts.length / limit)
 
-            let page = parseInt(req.query.page)
+            let page = parseInt(req.query.page ?? 1)
 
             if (!page) {
                 page = 1
@@ -33,6 +33,12 @@ exports.read = (req, res) => {
         .catch(err => res.send(err))
 }
 
+exports.readById = (req, res) => {
+    db.Post.findOne({_id: req.params.id})
+        .then(post => res.json(post))
+        .catch(err => res.send(err))
+}
+
 exports.create = (req, res) => {
     const fileName = fileUpload(req, res, `${__dirname}/../public/uploads`)
 
@@ -47,7 +53,12 @@ exports.create = (req, res) => {
 }
 
 exports.update = (req, res) => {
-    db.Post.findOneAndUpdate({_id: req.params.id}, req.body)
+    db.Post.findOneAndUpdate({ _id: req.params.id }, {
+        title: req.body.title,
+        slug: slugify(req.body.title),
+        content: req.body.content,
+        updatedAt: new Date()
+    })
         .then(post => res.json(post))
         .catch(err => res.send(err))
 }
@@ -59,7 +70,7 @@ exports.delete = (req, res) => {
 }
 
 exports.deleteAll = (req, res) => {
-    db.Post.deleteAll()
+    db.Post.deleteMany()
         .then(post => res.json(post))
         .catch(err => res.send(err))
 }

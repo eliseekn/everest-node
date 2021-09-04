@@ -2,13 +2,13 @@ import { useState } from "react"
 import Head from '../../components/head'
 
 export default function Create() {
-    const { API_URL } = process.env
+    const { NEXT_PUBLIC_API_URL } = process.env
     const [alert, showAlert] = useState(false)
 
     const sendData = e => {
         e.preventDefault()
 
-        fetch(`${API_URL}`, {
+        fetch(`${NEXT_PUBLIC_API_URL}/post`, {
             method: 'POST',
             body: new FormData(e.target)
         })
@@ -28,7 +28,7 @@ export default function Create() {
             <Head title="Create post" />
         
             <div className="container mt-5">
-                <h1>Create post</h1>
+                <h1 className="mb-5">Create post</h1>
 
                 <div className="card shadow-sm">
                     <div className="card-body">

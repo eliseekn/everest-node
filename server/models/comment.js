@@ -1,22 +1,19 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-    title: {
+    postId: {
         type: String,
         required: true
     },
 
-    slug: {
-        type: String
+    author: {
+        type: String,
+        required: true
     },
 
     content: {
         type: String,
         required: true
-    },
-
-    image: {
-        type: String
     },
 
     createdAt: {
@@ -30,4 +27,4 @@ const schema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Post', schema)
+module.exports = mongoose.model('Comment', schema)

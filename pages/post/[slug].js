@@ -3,15 +3,16 @@ import Link from 'next/link'
 import Header from '../../components/header'
 import Footer from '../../components/footer'
 import Head from '../../components/head'
+import Comment from '../../components/comment'
 
-export default function Home({ post }) {
+export default function Post({ post, comments }) {
     return (
         <>
             <Head title={`${post.title} | Le Blog de l'Everest`} />
 
             <Header />
 
-            <section className="container my-5 w-75">
+            <section className="container my-5 w-50">
                 <article className="card mb-5">
                     <Image src={`http://127.0.0.1:3001/public/uploads/${post.image}`} className="card-img-top" width="500" height="500" alt="Image de l'article" />
                     
@@ -24,6 +25,9 @@ export default function Home({ post }) {
                         </Link>
                     </div>
                 </article>  
+                
+                <Comment postId={post._id} comments={comments} />
+
             </section>
 
             <Footer />
@@ -31,26 +35,16 @@ export default function Home({ post }) {
     )
 }
 
-export async function getStaticProps({ params }) {
-    const { API_URL } = process.env
+export async function getServerSideProps({ params }) {
+    const { NEXT_PUBLIC_API_URL } = process.env
     
-    const res = await fetch(`${API_URL}/${params.slug}`)
+    let res = await fetch(`${NEXT_PUBLIC_API_URL}/post/${params.slug}`)
     const post = await res.json()
 
+    res = await fetch(`${NEXT_PUBLIC_API_URL}/comment/all/${post._id}`)
+    const comments = await res.json()
+
     return {
-        props: { post }
+        props: { post, comments }
     }
-}
-
-export async function getStaticPaths() {
-    const { API_URL } = process.env
-    
-    const res = await fetch(`${API_URL}`)
-    const posts = await res.json()
-
-    const paths = posts.map((post) => ({
-        params: { slug: post.slug },
-    }))
-  
-    return { paths, fallback: false }
 }

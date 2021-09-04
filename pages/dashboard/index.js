@@ -1,10 +1,24 @@
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 import Head from '../../components/head'
+import Login from '../login'
 
 export default function Dashboard({ posts, page, limit }) {
-    const { API_URL } = process.env
+    const { NEXT_PUBLIC_API_URL } = process.env
+    const [user, setUser] = useState(null)
+    const router = useRouter()
+    
+    useEffect(() => {
+        const value = localStorage.getItem('user');
+        const user = !!value ? JSON.parse(value) : undefined;
 
+        setUser(user)
+    }, [])
+    
+    if (!user) return <Login />
+    
     //https://javascript.info/task/truncate
     const truncate = (str, length) => {
         return (str.length > length) ? str.slice(0, length - 1) + '...' : str;
@@ -13,7 +27,7 @@ export default function Dashboard({ posts, page, limit }) {
     const sendData = (e, postId) => {
         e.preventDefault()
 
-        fetch(`${API_URL}/${postId}`, {method: 'DELETE'})
+        fetch(`${NEXT_PUBLIC_API_URL}/${postId}`, {method: 'DELETE'})
             .then(res => {
                 if (res.status == 200) {
                     document.location.reload()
@@ -29,10 +43,10 @@ export default function Dashboard({ posts, page, limit }) {
             <Head title="Dashboard" />
 
             <div className="container mt-5">
-                <div className="d-flex justify-content-between align-items-center">
-                    <h1>Posts</h1>
+                <div className="d-flex justify-content-between align-items-center mb-5">
+                    <h1>Posts ({posts.items.length})</h1>
                     <Link href="/dashboard/create">
-                        <a className="btn btn-dark">Create post</a>
+                        <a className="btn btn-dark" target="_blank">Create post</a>
                     </Link>
                 </div>
 
@@ -55,9 +69,15 @@ export default function Dashboard({ posts, page, limit }) {
                                 <td><Image src={`http://127.0.0.1:3001/public/uploads/${post.image}`} className="img-fluid" alt="Image de l'article" width="200" height="200" /></td>
                                 <td>{post.title}</td>
                                 <td>{truncate(post.content, 290)}</td>
-                                <td>{post.created_at}</td>
+                                <td>{post.createdAt}</td>
                                 <td>
                                     <div className="d-flex align-items-center">
+                                        <Link href={`/dashboard/comments/${post._id}`}>
+                                            <a title="Comments" target="_blank">
+                                                <i className="bi bi-chat-fill text-primary"></i>
+                                            </a>
+                                        </Link>
+
                                         <Link href={`/dashboard/edit/${post.slug}`}>
                                             <a className="mx-2" title="Edit" target="_blank">
                                                 <i className="bi bi-pencil-square text-primary"></i>
@@ -65,8 +85,8 @@ export default function Dashboard({ posts, page, limit }) {
                                         </Link>
 
                                         <form onSubmit={e => sendData(e, post._id)}>
-                                            <button type="submit" title="Delete" className="btn">
-                                                <i className="bi bi-trash text-danger"></i>
+                                            <button type="submit" title="Delete" className="btn px-0">
+                                                <i className="bi bi-trash-fill text-danger"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -78,15 +98,13 @@ export default function Dashboard({ posts, page, limit }) {
 
                 <nav className="my-5">
                     <ul className="pagination justify-content-center">
-
                         {posts.page > 1 && <li className="page-item">
                             <button className="page-link text-dark" onClick={() => router.push(`?page=${page - 1}&limit=${limit}`)}>
                                 &laquo;
                             </button>
                         </li>}
 
-                        {posts.totalPages > 1 &&
-                        <li className="page-item page-link text-dark">
+                        {posts.totalPages > 1 && <li className="page-item page-link text-dark">
                             Page {posts.page}/{posts.totalPages}
                         </li>}
                         
@@ -95,7 +113,6 @@ export default function Dashboard({ posts, page, limit }) {
                                 &raquo;
                             </button>
                         </li>}
-
                     </ul>
                 </nav>
             </div>
@@ -103,10 +120,10 @@ export default function Dashboard({ posts, page, limit }) {
     )
 }
 
-export async function getServerSideProps({ query : {page = 1, limit = 5} }) {
-    const { API_URL } = process.env
+export async function getServerSideProps({ query: { page = 1, limit = 5 } }) {
+    const { NEXT_PUBLIC_API_URL } = process.env
     
-    const res = await fetch(`${API_URL}?page=${page}&limit=${limit}`)
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/post?page=${page}&limit=${limit}`)
     const posts = await res.json()
 
     return {

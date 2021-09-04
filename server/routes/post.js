@@ -7,8 +7,8 @@ router.route('/')
     .post(post.create)
     .delete(post.deleteAll)
 
-router.route('/:slug')
-    .get(post.read)
+router.get('/:slug', post.read)    
+router.get('/id/:id', post.readById)
     
 router.route('/:id')
     .put(post.update)

@@ -15,11 +15,8 @@ export default function Home({ posts, page, limit }) {
 
             <section className="container my-5">
                 <div className="row row-cols-2">
-                    {posts.items.map((post, index) => (
-                        <Post
-                            key={index}
-                            post={post}
-                        />
+                    {posts.items.map((post) => (
+                        <Post key={post._id} post={post} />
                     ))}
                 </div>
 
@@ -32,8 +29,7 @@ export default function Home({ posts, page, limit }) {
                             </button>
                         </li>}
 
-                        {posts.totalPages > 1 &&
-                        <li className="page-item page-link text-dark">
+                        {posts.totalPages > 1 && <li className="page-item page-link text-dark">
                             Page {posts.page}/{posts.totalPages}
                         </li>}
                         
@@ -53,9 +49,9 @@ export default function Home({ posts, page, limit }) {
 }
 
 export async function getServerSideProps({ query: { page = 1, limit = 5 } }) {
-    const { API_URL } = process.env
+    const { NEXT_PUBLIC_API_URL } = process.env
     
-    const res = await fetch(`${API_URL}?page=${page}&limit=${limit}`)
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/post?page=${page}&limit=${limit}`)
     const posts = await res.json()
 
     return {

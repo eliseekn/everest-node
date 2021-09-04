@@ -2,7 +2,7 @@ import { useState } from "react"
 import Head from '../../../components/head'
 
 export default function Edit({ post }) {
-    const { API_URL } = process.env
+    const { NEXT_PUBLIC_API_URL } = process.env
     const [alert, showAlert] = useState(false)
     const [title, setTitle] = useState(post.title)
     const [content, setContent] = useState(post.content)
@@ -10,7 +10,7 @@ export default function Edit({ post }) {
     const sendData = (e, postId) => {
         e.preventDefault()
 
-        fetch(`${API_URL}/${postId}`, {
+        fetch(`${NEXT_PUBLIC_API_URL}/post/${postId}`, {
             method: 'PUT',
             body: new FormData(e.target)
         })
@@ -28,7 +28,7 @@ export default function Edit({ post }) {
             <Head title="Edit post" />
         
             <div className="container mt-5">
-                <h1>Edit post</h1>
+                <h1 className="mb-5">Edit post</h1>
 
                 <div className="card shadow-sm">
                     <div className="card-body">
@@ -61,26 +61,13 @@ export default function Edit({ post }) {
     )
 }
 
-export async function getStaticProps({ params }) {
-    const { API_URL } = process.env
+export async function getServerSideProps({ params }) {
+    const { NEXT_PUBLIC_API_URL } = process.env
     
-    const res = await fetch(`${API_URL}/${params.slug}`)
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/post/${params.slug}`)
     const post = await res.json()
 
     return {
         props: { post }
     }
-}
-
-export async function getStaticPaths() {
-    const { API_URL } = process.env
-    
-    const res = await fetch(`${API_URL}`)
-    const posts = await res.json()
-
-    const paths = posts.map((post) => ({
-        params: { slug: post.slug },
-    }))
-  
-    return { paths, fallback: false }
 }
