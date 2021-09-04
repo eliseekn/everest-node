@@ -14,7 +14,8 @@ exports.load = () => {
             users.map(user => {
                 db.User.create({
                     email: user.email,
-                    password: bcrypt.hashSync(user.password, 10)
+                    password: bcrypt.hashSync(user.password, 10),
+                    role: user.role
                 })
                     .catch(err => console.log(err))
             })

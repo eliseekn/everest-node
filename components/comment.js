@@ -1,7 +1,7 @@
-import { useState } from "react"
 import { useRouter } from 'next/router'
+import { useState } from "react"
 
-export default function Comment({ postId, comments }) {
+export default function Comment({ post, comments }) {
     const { NEXT_PUBLIC_API_URL } = process.env
     const [alert, showAlert] = useState(false)
     const router = useRouter()
@@ -9,14 +9,15 @@ export default function Comment({ postId, comments }) {
     const sendData = e => {
         e.preventDefault()
 
-        fetch(`${NEXT_PUBLIC_API_URL}/comment/${postId}`, {
+        fetch(`${NEXT_PUBLIC_API_URL}/comment/${post._id}`, {
             method: 'POST',
             body: new FormData(e.target)
         })
             .then(res => {
                 if (res.status == 200) {
                     showAlert(true)
-                    document.location.reload()
+                    e.target.reset()
+                    router.push(`/post/${post.slug}`, null, { scroll: false })
                 }
 
                 return res.json()

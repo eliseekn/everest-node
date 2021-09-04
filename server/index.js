@@ -9,16 +9,16 @@ const comment = require('./routes/comment')
 const login = require('./routes/login')
 const fixtures = require('./fixtures')
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV !== 'production') {
     fixtures.load()
 }
 
 const server = express()
 const port = process.env.NODE_SERVER_PORT
 
-server.use(fileUpload({createParentPath: true}));
+server.use(fileUpload({ createParentPath: true }));
 server.use("/public", express.static(path.join(__dirname, 'public')));
-server.use(cors({origin: '*'}))
+server.use(cors({ origin: '*' }))
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
 server.use('/api/post', post)

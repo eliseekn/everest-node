@@ -26,7 +26,7 @@ export default function Post({ post, comments }) {
                     </div>
                 </article>  
                 
-                <Comment postId={post._id} comments={comments} />
+                <Comment post={post} comments={comments} />
 
             </section>
 

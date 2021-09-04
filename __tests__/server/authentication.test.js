@@ -20,5 +20,8 @@ describe('Authentication test', () => {
         return req.post('/login')
             .send({ email: 'user@user.com', password: 'password' })
             .expect(200)
+            .then(res => {
+                expect(res.body.email).toBe('user@user.com')
+            })
     })
 })

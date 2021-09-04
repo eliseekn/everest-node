@@ -1,23 +1,26 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Head from '../../components/head'
-import Login from '../login'
 
 export default function Dashboard({ posts, page, limit }) {
     const { NEXT_PUBLIC_API_URL } = process.env
-    const [user, setUser] = useState(null)
     const router = useRouter()
+    const [alert, showAlert] = useState(false)
     
     useEffect(() => {
         const value = localStorage.getItem('user');
         const user = !!value ? JSON.parse(value) : undefined;
 
-        setUser(user)
-    }, [])
-    
-    if (!user) return <Login />
+        if (!user) {
+            router.push('/login')
+        }
+
+        if (user && user.role != 'ROLE_ADMIN') {
+            router.push('/')
+        }
+    }, [router])
     
     //https://javascript.info/task/truncate
     const truncate = (str, length) => {
@@ -27,10 +30,11 @@ export default function Dashboard({ posts, page, limit }) {
     const sendData = (e, postId) => {
         e.preventDefault()
 
-        fetch(`${NEXT_PUBLIC_API_URL}/${postId}`, {method: 'DELETE'})
+        fetch(`${NEXT_PUBLIC_API_URL}/post/${postId}`, {method: 'DELETE'})
             .then(res => {
                 if (res.status == 200) {
-                    document.location.reload()
+                    showAlert(true)
+                    router.push('/dashboard')
                 }
 
                 res.json()
@@ -49,6 +53,10 @@ export default function Dashboard({ posts, page, limit }) {
                         <a className="btn btn-dark" target="_blank">Create post</a>
                     </Link>
                 </div>
+
+                {alert && <div className="alert alert-success mb-3">
+                    Post has been deleted successfully
+                </div>}
 
                 <table className="table">
                     <thead>

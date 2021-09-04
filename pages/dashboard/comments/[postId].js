@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import Head from '../../../components/head'
 
 export default function Comments({ post, comments, page, limit }) {
     const { NEXT_PUBLIC_API_URL } = process.env
     const router = useRouter()
+    const [alert, showAlert] = useState(false)
 
     //https://javascript.info/task/truncate
     const truncate = (str, length) => {
@@ -16,7 +18,8 @@ export default function Comments({ post, comments, page, limit }) {
         fetch(`${NEXT_PUBLIC_API_URL}/comment/${commentId}`, {method: 'DELETE'})
             .then(res => {
                 if (res.status == 200) {
-                    router.reload()
+                    showAlert(true)
+                    router.push(`/dashboard/comments/${post._id}`)
                 }
 
                 res.json()
@@ -31,6 +34,10 @@ export default function Comments({ post, comments, page, limit }) {
             <div className="container mt-5">
                 <h1>Comments ({comments.items.length})</h1>
                 <h4 className="fst-italic mb-5">{post.title}</h4>
+
+                {alert && <div className="alert alert-success mb-3">
+                    Comment has been deleted successfully
+                </div>}
 
                 <table className="table">
                     <thead>
@@ -90,7 +97,7 @@ export default function Comments({ post, comments, page, limit }) {
 export async function getServerSideProps({ params, query : {page = 1, limit = 5} }) {
     const { NEXT_PUBLIC_API_URL } = process.env
 
-    let res = await fetch(`${NEXT_PUBLIC_API_URL}/comment/${params.id}/?page=${page}&limit=${limit}`)
+    let res = await fetch(`${NEXT_PUBLIC_API_URL}/comment/${params.postId}/?page=${page}&limit=${limit}`)
     const comments = await res.json()
 
     const postId = comments.items.map((comment) => {
