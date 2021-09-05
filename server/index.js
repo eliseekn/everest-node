@@ -14,7 +14,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const server = express()
-const port = process.env.NODE_SERVER_PORT
 
 server.use(fileUpload({ createParentPath: true }));
 server.use("/public", express.static(path.join(__dirname, 'public')));
@@ -24,6 +23,8 @@ server.use(bodyParser.urlencoded({extended: true}))
 server.use('/api/post', post)
 server.use('/api/comment', comment)
 server.use('/api/login', login)
+
+const port = process.env.NODE_SERVER_PORT
 
 server.listen(port, '', () => {
     console.log('Server running on port ' + port)

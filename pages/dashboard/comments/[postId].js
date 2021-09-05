@@ -1,16 +1,12 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Head from '../../../components/head'
+import { truncate } from '../../../utils'
 
 export default function Comments({ post, comments, page, limit }) {
     const { NEXT_PUBLIC_API_URL } = process.env
     const router = useRouter()
     const [alert, showAlert] = useState(false)
-
-    //https://javascript.info/task/truncate
-    const truncate = (str, length) => {
-        return (str.length > length) ? str.slice(0, length - 1) + '...' : str;
-    }
 
     const sendData = (e, commentId) => {
         e.preventDefault()
@@ -22,9 +18,8 @@ export default function Comments({ post, comments, page, limit }) {
                     router.push(`/dashboard/comments/${post._id}`)
                 }
 
-                res.json()
+                return res.json()
             })
-            .then(data => console.log(data))
     }
 
     return (

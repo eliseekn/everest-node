@@ -10,10 +10,8 @@ export default function Logout() {
         const value = localStorage.getItem('user');
         const user = !!value ? JSON.parse(value) : undefined;
 
-        if (!user) {
-            router.push('/login')
-        }
+        if (!user) router.push('/login')
     }, [router])
 
-    return <p>Processing...</p>
+    return <p>Redirecting...</p>
 }

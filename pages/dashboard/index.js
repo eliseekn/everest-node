@@ -3,9 +3,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Head from '../../components/head'
+import { truncate } from '../../utils'
 
 export default function Dashboard({ posts, page, limit }) {
-    const { NEXT_PUBLIC_API_URL } = process.env
+    const { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_API_PUBLIC_URL } = process.env
     const router = useRouter()
     const [alert, showAlert] = useState(false)
     
@@ -22,11 +23,6 @@ export default function Dashboard({ posts, page, limit }) {
         }
     }, [router])
     
-    //https://javascript.info/task/truncate
-    const truncate = (str, length) => {
-        return (str.length > length) ? str.slice(0, length - 1) + '...' : str;
-    }
-
     const sendData = (e, postId) => {
         e.preventDefault()
 
@@ -74,7 +70,7 @@ export default function Dashboard({ posts, page, limit }) {
                         {posts.items.map((post, index) => (
                             <tr key={index} className="align-middle">
                                 <th scope="row">{index + 1}</th>
-                                <td><Image src={`http://127.0.0.1:3001/public/uploads/${post.image}`} className="img-fluid" alt="Image de l'article" width="200" height="200" /></td>
+                                <td><Image src={`${NEXT_PUBLIC_API_PUBLIC_URL}/${post.image}`} className="img-fluid" alt="Image de l'article" width="200" height="200" /></td>
                                 <td>{post.title}</td>
                                 <td>{truncate(post.content, 290)}</td>
                                 <td>{post.createdAt}</td>

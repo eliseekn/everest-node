@@ -6,6 +6,8 @@ import Head from '../../components/head'
 import Comment from '../../components/comment'
 
 export default function Post({ post, comments }) {
+    const { NEXT_PUBLIC_API_PUBLIC_URL } = process.env
+
     return (
         <>
             <Head title={`${post.title} | Le Blog de l'Everest`} />
@@ -14,7 +16,7 @@ export default function Post({ post, comments }) {
 
             <section className="container my-5 w-50">
                 <article className="card mb-5">
-                    <Image src={`http://127.0.0.1:3001/public/uploads/${post.image}`} className="card-img-top" width="500" height="500" alt="Image de l'article" />
+                    <Image src={`${NEXT_PUBLIC_API_PUBLIC_URL}/${post.image}`} className="card-img-top" width="500" height="500" alt="Image de l'article" />
                     
                     <div className="card-body">
                         <h2 className="card-title post-title">{post.title}</h2>
