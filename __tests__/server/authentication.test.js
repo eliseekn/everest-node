@@ -18,10 +18,10 @@ describe('Authentication test', () => {
 
     it('can authenticate with existing user credentials', () => {
         return req.post('/login')
-            .send({ email: 'user@user.com', password: 'password' })
+            .send({ email: 'user@mail.com', password: 'password' })
             .expect(200)
             .then(res => {
-                expect(res.body.email).toBe('user@user.com')
+                expect(res.body.email).toBe('user@mail.com')
             })
     })
 })
