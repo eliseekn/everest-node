@@ -2,13 +2,12 @@ import { useState } from "react"
 import Head from '../../components/head'
 
 export default function Create() {
-    const { NEXT_PUBLIC_API_URL } = process.env
     const [alert, showAlert] = useState(false)
 
     const sendData = e => {
         e.preventDefault()
 
-        fetch(`${NEXT_PUBLIC_API_URL}/post`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/post`, {
             method: 'POST',
             body: new FormData(e.target)
         })

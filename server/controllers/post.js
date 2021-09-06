@@ -1,4 +1,5 @@
 const db = require('../models')
+const fs = require('fs')
 const slugify = require('../service/slugify')
 const fileUpload = require('../service/file-upload')
 
@@ -64,8 +65,21 @@ exports.update = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    db.Post.deleteOne({_id: req.params.id})
-        .then(post => res.json(post))
+    db.Post.findOne({ _id: req.params.id })
+        .then(post => {
+            try {
+                fs.unlinkSync(`${__dirname}/../public/uploads/${post.image}`)
+            } catch (err) {
+                res.send(err)
+            }
+
+            db.Post.deleteOne({ _id: post._id })
+                .then(post => {
+                    db.Comment.deleteMany({postId: post._id})
+                        .then(() => res.json(post))
+                        .catch(err => res.send(err))
+                })
+        })
         .catch(err => res.send(err))
 }
 

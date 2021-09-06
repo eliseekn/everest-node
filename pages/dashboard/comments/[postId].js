@@ -4,14 +4,13 @@ import Head from '../../../components/head'
 import { truncate } from '../../../utils'
 
 export default function Comments({ post, comments, page, limit }) {
-    const { NEXT_PUBLIC_API_URL } = process.env
     const router = useRouter()
     const [alert, showAlert] = useState(false)
 
     const sendData = (e, commentId) => {
         e.preventDefault()
 
-        fetch(`${NEXT_PUBLIC_API_URL}/comment/${commentId}`, {method: 'DELETE'})
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/comment/${commentId}`, {method: 'DELETE'})
             .then(res => {
                 if (res.status == 200) {
                     showAlert(true)
@@ -90,16 +89,14 @@ export default function Comments({ post, comments, page, limit }) {
 }
 
 export async function getServerSideProps({ params, query : {page = 1, limit = 5} }) {
-    const { NEXT_PUBLIC_API_URL } = process.env
-
-    let res = await fetch(`${NEXT_PUBLIC_API_URL}/comment/${params.postId}/?page=${page}&limit=${limit}`)
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/comment/${params.postId}/?page=${page}&limit=${limit}`)
     const comments = await res.json()
 
     const postId = comments.items.map((comment) => {
         return comment.postId
     })
 
-    res = await fetch(`${NEXT_PUBLIC_API_URL}/post/id/${postId[0]}`)
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/id/${postId[0]}`)
     const post = await res.json()
 
     return {

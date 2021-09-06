@@ -3,28 +3,28 @@ import { useState } from "react"
 import Head from '../components/head'
 
 export default function Login() {
-    const { NEXT_PUBLIC_API_URL } = process.env
     const [alert, showAlert] = useState(false)
     const router = useRouter()
 
     const sendData = e => {
         e.preventDefault()
 
-        fetch(`${NEXT_PUBLIC_API_URL}/login`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
             method: 'POST',
             body: new FormData(e.target)
         })
             .then(res => {
-                if (res.status != 200) {
-                    showAlert(true)
-                    e.target.reset()
-                }
-
+                status = res.status
                 return res.json()
             })
             .then(data => {
-                localStorage.setItem('user', JSON.stringify(data))
-                router.push('/dashboard')
+                if (status != 200) {
+                    showAlert(true)
+                    e.target.reset()
+                } else {
+                    localStorage.setItem('user', JSON.stringify(data))
+                    router.push('/dashboard')
+                }
             })
     }
 

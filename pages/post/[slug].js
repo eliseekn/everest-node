@@ -6,8 +6,6 @@ import Head from '../../components/head'
 import Comment from '../../components/comment'
 
 export default function Post({ post, comments }) {
-    const { NEXT_PUBLIC_API_PUBLIC_URL } = process.env
-
     return (
         <>
             <Head title={`${post.title} | Le Blog de l'Everest`} />
@@ -16,7 +14,7 @@ export default function Post({ post, comments }) {
 
             <section className="container my-5 w-50">
                 <article className="card mb-5">
-                    <Image src={`${NEXT_PUBLIC_API_PUBLIC_URL}/${post.image}`} className="card-img-top" width="500" height="500" alt="Image de l'article" />
+                    <Image src={`${process.env.NEXT_PUBLIC_API_PUBLIC_URL}/${post.image}`} className="card-img-top" width="500" height="500" alt="Image de l'article" />
                     
                     <div className="card-body">
                         <h2 className="card-title post-title">{post.title}</h2>
@@ -38,12 +36,10 @@ export default function Post({ post, comments }) {
 }
 
 export async function getServerSideProps({ params }) {
-    const { NEXT_PUBLIC_API_URL } = process.env
-    
-    let res = await fetch(`${NEXT_PUBLIC_API_URL}/post/${params.slug}`)
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/${params.slug}`)
     const post = await res.json()
 
-    res = await fetch(`${NEXT_PUBLIC_API_URL}/comment/all/${post._id}`)
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/comment/all/${post._id}`)
     const comments = await res.json()
 
     return {

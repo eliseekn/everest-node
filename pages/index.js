@@ -49,9 +49,7 @@ export default function Home({ posts, page, limit }) {
 }
 
 export async function getServerSideProps({ query: { page = 1, limit = 5 } }) {
-    const { NEXT_PUBLIC_API_URL } = process.env
-    
-    const res = await fetch(`${NEXT_PUBLIC_API_URL}/post?page=${page}&limit=${limit}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post?page=${page}&limit=${limit}`)
     const posts = await res.json()
 
     return {

@@ -46,3 +46,11 @@ exports.delete = (req, res) => {
         .then(comment => res.json(comment))
         .catch(err => res.send(err))
 }
+
+exports.deleteAll = (req, res) => {
+    db.Comment.deleteMany({ postId: req.params.postId })
+        .then(comment => res.json(comment))
+        .catch(err => res.send(err))
+}
+
+module.exports = exports
